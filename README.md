@@ -1,3 +1,101 @@
+# AI Insurance Policy Agent 
+
+This project implements an AI-powered assistant designed to help users create, edit, and manage insurance policies. It features a **Next.js frontend** and a **FastAPI backend**, orchestrated with **Docker Compose** for seamless deployment.
+
+##  How It Works
+
+1. **User Interaction**:  
+   Users can write or edit policy text directly in the interface or interact with the assistant via a chat (`PolicyChat`).
+
+2. **AI Agent Processing**:  
+   The chat communicates with a backend API powered by a LangGraph-based agent:
+   - `policy_rag_tool`: Performs semantic search on a private vector store of internal insurance documents.
+   - `TavilySearchResults`: Conducts web searches for real-time regulatory updates or general knowledge.
+
+3. **Response Generation**:  
+   The AI selects the best tools, processes the query, and returns suggestions or answers.
+
+4. **Dynamic Policy Updates**:  
+   AI responses are displayed in the chat and may be copied into the policy editor by the user.
+
+5. **Policy Persistence**:  
+   Finalized policies are stored via backend mechanisms (**database TBD**).
+
+##  Tech Stack
+
+###  Frontend (Next.js)
+- Located in: `frontend/insurance-policy-agent/`
+- Pages:
+  - `/policy/create` (policy editor and AI assistant)
+- API proxy route:
+  - `POST /api/internal/answer_query` → forwards user queries to backend
+
+###  Backend (FastAPI)
+- Located in: `policy-ai/ai-service/`
+- Key endpoints:
+  - `POST /api/internal/v1/answer_query` → invokes LangGraph AI agent
+  - `POST /load-documents-from-s3` → document ingestion from AWS S3
+- Core logic:
+  - `rag_agent.py`: defines the agent logic
+  - `graph.py`: LangGraph structure and flow
+  - `tools.py`: AI tools for RAG and search
+
+##  Running with Docker Compose
+
+### 1. Prerequisites
+- Docker and Docker Compose installed
+
+### 2. Environment Variables
+- Create `.env` files as needed (refer to `.env.example`)
+  - Includes API keys (e.g., OpenAI, Tavily) and AWS credentials
+
+### 3. Start the App
+
+```bash
+docker-compose up
+# or detached mode:
+docker-compose up -d
+4. Access the Services
+Frontend: http://localhost:3000
+
+Backend API: http://localhost:8000
+
+5. Stop the App
+bash
+Copiar
+Editar
+docker-compose down
+# or to remove volumes as well:
+docker-compose down -v
+ Features
+AI-powered document assistance with LangGraph agents
+
+Hybrid retrieval system (vector DB + web search)
+
+Full-stack modular architecture
+
+Secure communication with thread context
+
+Ready for production deployment with Docker
+
+ Project Structure
+bash
+Copiar
+Editar
+insurance-agent-ai/
+├── frontend/
+│   └── insurance-policy-agent/       # Next.js frontend
+├── policy-ai/
+│   └── ai-service/                   # FastAPI backend
+├── docker-compose.yml
+└── README.md                         # You're here!
+ Notes
+The agent uses LangGraph to define stateful, multi-step reasoning logic.
+
+All tools and models are modular for future extensions (e.g., custom vector store, new AI models).
+
+Data persistence is currently configurable based on backend settings.
+
 # Proyecto de Agente de Pólizas de Seguros AI
 
 Este proyecto implementa un asistente AI para ayudar en la creación y gestión de pólizas de seguros. Consta de un frontend desarrollado en Next.js y un backend en FastAPI, orquestados mediante Docker Compose.
